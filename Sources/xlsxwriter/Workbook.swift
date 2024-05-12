@@ -10,7 +10,13 @@ public struct Workbook {
   var lxw_workbook: UnsafeMutablePointer<lxw_workbook>
 
   /// Create a new workbook object.
-  public init(name: String) { self.lxw_workbook = name.withCString { workbook_new($0) } }
+    public init(name: String, fileDirectory: String) {
+        self.lxw_workbook = name.withCString { name in
+            fileDirectory.withCString { fileDirectory in
+                workbook_new(name, fileDirectory)
+            }
+        }
+    }
   /// Close the Workbook object and write the XLSX file.
   public func close() {
     let error = workbook_close(lxw_workbook)
